@@ -13,7 +13,7 @@ using namespace boost;
 
 BOOST_AUTO_TEST_SUITE( test_sub_graph_induced )
 
-BOOST_AUTO_TEST_CASE( small_graph_1 )
+BOOST_AUTO_TEST_CASE( small_sub_graph_finds_iso )
 {
 
 	typedef adjacency_list< setS, vecS, undirectedS > graph_type;
@@ -56,38 +56,114 @@ BOOST_AUTO_TEST_CASE( small_graph_1 )
 }
 
 // Test complete graph K4 embedding in K7.
-BOOST_AUTO_TEST_CASE( K4_in_K7 )
+BOOST_AUTO_TEST_CASE( K4_K7_finds_iso )
 {
 
 	typedef adjacency_list< setS, vecS, undirectedS > graph_type;
 
-	// Build K7
-	//graph_type graph_K7(7);
-	//for (int i = 0; i <= 6; i++) {
-	//	for (int j = i + 1; j <= 6; j++) {
-	//		add_edge(i, j, graph_K7);
-	//	}
-	//}
 	graph_type graph_K7 = complete_undirected(7);
 	
-	// Build K4
-	//graph_type graph_K4(4);
-	//for (int i = 0; i <= 3; i++) {
-	//	for (int j = i + 1; j <= 3; j++) {
-	//		add_edge(i, j, graph_K4);
-	//	}
-	//}
 	graph_type graph_K4 = complete_undirected(4);
 
 	// Create callback to print mappings
 	vf2_empty_callback < graph_type, graph_type > callback(graph_K4, graph_K7);
 
-	// Print out all subgraph isomorphism mappings between K7 and K4.
+	// Find subgraph isomorphism mappings between K7 and K4.
 	// Vertices and edges are assumed to be always equivalent.
 	const bool result = vf2_subgraph_mono(graph_K4, graph_K7, callback);
 
 	BOOST_TEST(result);
 
 }
+
+// Test medium-sized embedding of K6 into K9.
+BOOST_AUTO_TEST_CASE ( K6_K9_finds_iso ) 
+{
+
+	typedef adjacency_list< setS, vecS, undirectedS > graph_type;
+
+	graph_type graph_K9 = complete_undirected(9);
+	graph_type graph_K6 = complete_undirected(6);
+
+	vf2_empty_callback < graph_type, graph_type > callback(graph_K6, graph_K9);
+
+	const bool result = vf2_subgraph_mono(graph_K6, graph_K9, callback);
+
+	BOOST_TEST(result);
+}
+
+// Test no embedding of K4 into complete bipartite graph KB3,4.
+BOOST_AUTO_TEST_CASE ( K4_bipartite_no_iso )
+{
+
+	typedef adjacency_list< setS, vecS, undirectedS > graph_type;
+
+	graph_type graph_KB3c4(7);
+	for (int i = 0; i <= 3; i++) {
+		for (int j = 4; j <= 7; j++) {
+			add_edge(i, j, graph_KB3c4);
+		}
+	}
+	
+	graph_type graph_K4 = complete_undirected(4);
+
+	vf2_empty_callback < graph_type, graph_type > callback(graph_K4, graph_KB3c4);
+
+	const bool result = vf2_subgraph_mono(graph_K4, graph_KB3c4, callback);
+
+	BOOST_TEST(result == false);
+
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
+BOOST_AUTO_TEST_SUITE( test_sub_graph_non_induced )
+
+// Test sqaure embeds in K4.
+BOOST_AUTO_TEST_CASE( square_K4_finds_iso )
+{
+	
+	typedef adjacency_list< setS, vecS, undirectedS > graph_type;
+
+	graph_type graph_square(4);
+	add_edge(0, 1, graph_square);
+	add_edge(1, 2, graph_square);
+	add_edge(2, 3, graph_square);
+	add_edge(3, 0, graph_square);
+
+	graph_type graph_K4 = complete_undirected(4);
+
+	vf2_empty_callback < graph_type, graph_type > callback(graph_square, graph_K4);
+
+	const bool result = vf2_subgraph_mono(graph_square, graph_K4, callback);
+
+	BOOST_TEST(result);
+
+}
+
+
+// Test almost complete graph K4 embedding in K7.
+BOOST_AUTO_TEST_CASE( almost_K4_K7_finds_iso )
+{
+
+	typedef adjacency_list< setS, vecS, undirectedS > graph_type;
+
+	graph_type graph_K7 = complete_undirected(7);
+	
+	graph_type graph_almost_K4 = complete_undirected(4);
+	remove_edge(0, 1, graph_almost_K4);
+
+	// Create callback to print mappings
+	vf2_empty_callback < graph_type, graph_type > callback(graph_almost_K4, graph_K7);
+
+	// Find subgraph isomorphism mappings between K7 and K4.
+	// Vertices and edges are assumed to be always equivalent.
+	const bool result = vf2_subgraph_mono(graph_almost_K4, graph_K7, callback);
+
+	BOOST_TEST(result);
+
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
