@@ -1,18 +1,28 @@
-#include <boost/graph/adjacency_list.hpp>
+#ifndef COMPLETE_GRAPH_H
+#define COMPLETE_GRAPH_H
 
-using namespace boost;
+#include <lemon/list_graph.h>
 
-typedef adjacency_list< setS, vecS, undirectedS > graph_type;
+namespace lib {
 
-inline graph_type complete_undirected(int n) {
+	inline lemon::ListGraph complete_undirected(int n) {
 
-	graph_type graph_Kn(n);
-	
-	for (int i = 0; i <= n; i++) {
-		for (int j = i + 1; j <= 3; j++) {
-			add_edge(i, j, graph_Kn);
+		lemon::ListGraph graph_Kn;
+
+		// Add nodes.
+		for (int i = 0; i <= n; i++) {
+			graph_Kn.addNode();
 		}
+		
+		// Add edges.
+		for (int i = 0; i <= n; i++) {
+			for (int j = i + 1; j <= 3; j++) {
+				graph_Kn.addEdge(graph_Kn.nodeFromId(i), graph_Kn.nodeFromId(j));
+			}
+		}
+
+		return graph_Kn; // TODO: Figure out how to return or pass ref.
 	}
 
-	return graph_Kn;
 }
+#endif

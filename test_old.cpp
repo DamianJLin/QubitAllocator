@@ -1,3 +1,4 @@
+// TODO: Change from BOOST to LEMON
 #define BOOST_TEST_MODULE sub_graph_iso_test
 
 #include <boost/test/included/unit_test.hpp> // Testing
@@ -65,11 +66,8 @@ BOOST_AUTO_TEST_CASE( K4_K7_finds_iso )
 	
 	graph_type graph_K4 = complete_undirected(4);
 
-	// Create callback to print mappings
 	vf2_empty_callback < graph_type, graph_type > callback(graph_K4, graph_K7);
 
-	// Find subgraph isomorphism mappings between K7 and K4.
-	// Vertices and edges are assumed to be always equivalent.
 	const bool result = vf2_subgraph_mono(graph_K4, graph_K7, callback);
 
 	BOOST_TEST(result);
