@@ -5,9 +5,9 @@
 
 namespace lib {
 
-	inline lemon::ListGraph complete_undirected(int n) {
+	inline lemon::ListGraph* complete_undirected(int n) {
 
-		lemon::ListGraph graph_Kn;
+		static lemon::ListGraph graph_Kn;
 
 		// Add nodes.
 		for (int i = 0; i <= n; i++) {
@@ -21,7 +21,7 @@ namespace lib {
 			}
 		}
 
-		return graph_Kn; // TODO: Figure out how to return or pass ref.
+		return &graph_Kn; // TODO: Figure out how to return or pass ref.
 	}
 
 }
